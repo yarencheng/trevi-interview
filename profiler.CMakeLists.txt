@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.10)
+
+project(trevi-interview)
+
+set(CMAKE_CXX_STANDARD 17)
+SET(CMAKE_CXX_FLAGS    "-pg")
+
+ADD_SUBDIRECTORY (googletest/googletest/)
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+
+add_executable(profiler dfa_filter_profiler.cpp dfa_filter.cpp)
+target_link_libraries(profiler gtest gtest_main)

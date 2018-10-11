@@ -5,14 +5,13 @@ RUN apt-get install -y g++
 RUN apt-get install -y cmake
 
 WORKDIR /src
-COPY * ./
+COPY . ./
 
 WORKDIR /src/build
 RUN cmake ..
 RUN make
+RUN ./unittest
 
 FROM ubuntu:18.04
-
 COPY --from=builder /src/build/filter /usr/bin/filter
-
 CMD [ "filter" ]

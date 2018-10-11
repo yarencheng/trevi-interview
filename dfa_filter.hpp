@@ -8,15 +8,15 @@ namespace interview {
 class DFAFilter {
 public:
 
-    void init(const std::vector<std::string>& dirtyWords);
+    void init(const std::vector<std::wstring>& dirtyWords);
 
-    std::string filter(const std::string& in);
+    std::wstring filter(const std::wstring& in);
 
-    std::unordered_map<char, std::vector<std::string>> getDFATree();
+    std::unordered_map<wchar_t, std::vector<std::wstring>> getDFATree();
 
 private:
 
-    std::unordered_map<char, std::vector<std::string>> _tree;
+    std::unordered_map<wchar_t, std::vector<std::wstring>> _tree;
 
 };
 

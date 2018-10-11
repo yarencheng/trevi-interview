@@ -6,7 +6,7 @@ using namespace ::std;
 using namespace ::testing;
 using namespace ::interview;
 
-TEST(DFAFilter, init_1) {
+TEST(DFAFilter, add_1) {
 
   // arrange
   DFAFilter filter;
@@ -15,7 +15,7 @@ TEST(DFAFilter, init_1) {
   };
 
   // action
-  filter.init({L"a"});
+  filter.add({L"a"});
   unordered_map<wchar_t, vector<wstring>> actual = filter.getDFATree();
 
 
@@ -23,7 +23,7 @@ TEST(DFAFilter, init_1) {
   EXPECT_EQ(actual, expected);
 }
 
-TEST(DFAFilter, init_2) {
+TEST(DFAFilter, add_2) {
 
   // arrange
   DFAFilter filter;
@@ -32,7 +32,7 @@ TEST(DFAFilter, init_2) {
   };
 
   // action
-  filter.init({L"abc"});
+  filter.add({L"abc"});
   unordered_map<wchar_t, vector<wstring>> actual = filter.getDFATree();
 
 
@@ -40,7 +40,7 @@ TEST(DFAFilter, init_2) {
   EXPECT_EQ(actual, expected);
 }
 
-TEST(DFAFilter, init_3) {
+TEST(DFAFilter, add_3) {
 
   // arrange
   DFAFilter filter;
@@ -50,7 +50,7 @@ TEST(DFAFilter, init_3) {
   };
 
   // action
-  filter.init({L"abc",L"def"});
+  filter.add({L"abc",L"def"});
   unordered_map<wchar_t, vector<wstring>> actual = filter.getDFATree();
 
 
@@ -58,7 +58,7 @@ TEST(DFAFilter, init_3) {
   EXPECT_EQ(actual, expected);
 }
 
-TEST(DFAFilter, init_4) {
+TEST(DFAFilter, add_4) {
 
   // arrange
   DFAFilter filter;
@@ -67,7 +67,25 @@ TEST(DFAFilter, init_4) {
   };
 
   // action
-  filter.init({L"abc",L"adef"});
+  filter.add({L"abc",L"adef"});
+  unordered_map<wchar_t, vector<wstring>> actual = filter.getDFATree();
+
+
+  // assert
+  EXPECT_EQ(actual, expected);
+}
+
+TEST(DFAFilter, add_5) {
+
+  // arrange
+  DFAFilter filter;
+  unordered_map<wchar_t, vector<wstring>> expected = {
+    { 'a', {L"bc"} }
+  };
+
+  // action
+  filter.add({L"abc"});
+  filter.add({L"abc"});
   unordered_map<wchar_t, vector<wstring>> actual = filter.getDFATree();
 
 
@@ -79,7 +97,7 @@ TEST(DFAFilter, filter_1) {
 
   // arrange
   DFAFilter filter;
-  filter.init({L"a"});
+  filter.add({L"a"});
 
   // action
   wstring actual = filter.filter(L"abbbabbba");
@@ -93,7 +111,7 @@ TEST(DFAFilter, filter_2) {
 
   // arrange
   DFAFilter filter;
-  filter.init({L"aa"});
+  filter.add({L"aa"});
 
   // action
   wstring actual = filter.filter(L"aabbbaabbbaa");
@@ -107,7 +125,7 @@ TEST(DFAFilter, filter_3) {
 
   // arrange
   DFAFilter filter;
-  filter.init({L"aaa"});
+  filter.add({L"aaa"});
 
   // action
   wstring actual = filter.filter(L"aaabbbaaabbbaaa");
@@ -121,7 +139,7 @@ TEST(DFAFilter, filter_4) {
 
   // arrange
   DFAFilter filter;
-  filter.init({L"a", L"ab", L"abc", L"abcd"});
+  filter.add({L"a", L"ab", L"abc", L"abcd"});
 
   // action
   wstring actual = filter.filter(L"abcdefg");
@@ -135,7 +153,7 @@ TEST(DFAFilter, filter_5) {
 
   // arrange
   DFAFilter filter;
-  filter.init({L"二"});
+  filter.add({L"二"});
 
   // action
   wstring actual = filter.filter(L"一二三");

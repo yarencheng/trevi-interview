@@ -7,15 +7,18 @@
 using namespace ::std;
 using namespace ::interview;
 
-void DFAFilter::init(const vector<wstring>& dirtyWords) {
+void DFAFilter::add(const vector<wstring>& dirtyWords) {
 
-    set<wstring> unique;
-    for (auto& s: dirtyWords) {
-        unique.insert(s);
-    }
+    for (auto& word: dirtyWords) {
 
-    for (auto& word: unique) {
+        auto r = _dirtyWords.insert(word);
+        if (!r.second) {
+            continue;
+        }
+
+
         wchar_t first = word[0];
+
         if (_tree.find(first) == _tree.end()) {
             _tree[first] = vector<wstring>();
         }

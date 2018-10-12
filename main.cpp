@@ -3,6 +3,9 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <locale>
+#include <codecvt>
+#include <string>
 #include <boost/program_options.hpp>
 #include "dfa_filter.hpp"
 
@@ -14,6 +17,7 @@ int main(int argc, char** argv);
 wstring randomString(int length);
 void profiling(int dataSizeMin, int dataSizeMax, int dataSizeStep, int sentenceLength, string report);
 long long getCpuMs();
+void interactMode();
 
 int main(int argc, char** argv) {
 
@@ -44,7 +48,7 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    throw "TODO";
+    interactMode();
 
     return 0;
 }
@@ -116,4 +120,28 @@ long long getCpuMs(){
     ms += usage.ru_utime.tv_usec / 1000;
 
     return ms;
+}
+
+void interactMode() {
+
+    DFAFilter filter;
+    wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
+
+    while (true) {
+        string line;
+        getline(cin, line);
+
+        wstring wline = converter.from_bytes(line);
+
+        if (wline[0] == L'+') {
+            filter.add({wline.substr(1)});
+        } else if (wline[0] == L'?') {
+            cout << "search TODO" << endl;
+        } else {
+            wstring wfiltered = filter.filter(wline);
+            string filtered = converter.to_bytes(wfiltered);
+            cout << "> " << filtered << endl;
+        }
+    }
+
 }

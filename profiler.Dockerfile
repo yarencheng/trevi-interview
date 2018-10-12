@@ -12,4 +12,10 @@ WORKDIR /src/build
 RUN cmake ..
 RUN make
 
-RUN ./profiler
+ENV DATASIZE_MIN=100000
+ENV DATASIZE_MAX=200000
+ENV DATASIZE_STEP=10000
+
+COPY profiler.entry.sh .
+RUN chmod +x profiler.entry.sh
+CMD ./profiler.entry.sh

@@ -22,25 +22,30 @@ wstring randomString(int length) {
   return ss.str();
 }
 
-class ProfilerTest : public TestWithParam<int> {
+class AddTest : public TestWithParam<int> {
 public:
 
 };
 
-INSTANTIATE_TEST_CASE_P(AnotherInstantiationName, ProfilerTest,
+INSTANTIATE_TEST_CASE_P(Profiler, AddTest,
   ::testing::ValuesIn([]() -> vector<int> {
-    int cur = 1000;
+
+    int min = stoi(getenv("DATASIZE_MIN"));
+    int max = stoi(getenv("DATASIZE_MAX"));
+    int step = stoi(getenv("DATASIZE_STEP"));
+
+    int cur = min;
     vector<int> ans;
-    while(cur<=200000){
+    while(cur<=max){
       ans.push_back(cur);
-      cur+=1000;
+      cur+=step;
     }
     return ans;
   }()),
   testing::PrintToStringParamName()
 );
 
-TEST_P(ProfilerTest, add) {
+TEST_P(AddTest, add) {
   int dataSize = GetParam();
 
   DFAFilter filter;

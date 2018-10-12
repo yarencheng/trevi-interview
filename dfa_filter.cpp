@@ -66,6 +66,6 @@ wstring DFAFilter::filter(const wstring& in) {
     return out.str();
 }
 
-map<wchar_t, vector<wstring>> DFAFilter::getDFATree() {
+unordered_map<wchar_t, vector<wstring>> DFAFilter::getDFATree() {
     return _tree;
 }

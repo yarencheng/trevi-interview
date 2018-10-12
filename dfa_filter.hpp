@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <set>
+#include <map>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -13,13 +15,13 @@ public:
 
     std::wstring filter(const std::wstring& in);
 
-    std::unordered_map<wchar_t, std::vector<std::wstring>> getDFATree();
+    std::map<wchar_t, std::vector<std::wstring>> getDFATree();
 
 private:
 
-    std::unordered_map<wchar_t, std::vector<std::wstring>> _tree;
+    std::map<wchar_t, std::vector<std::wstring>> _tree;
 
-    std::unordered_set<std::wstring> _dirtyWords;
+    std::set<std::wstring> _dirtyWords;
 
 };
 

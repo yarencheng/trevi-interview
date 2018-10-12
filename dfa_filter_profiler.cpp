@@ -56,6 +56,11 @@ TEST_P(Profiler, test) {
   }
 
   filter.add(words);
+
+  int filterSize = stoi(getenv("FILTER_LENGTH"));
+  wstring filteredString = randomString(filterSize);
+
+  filter.filter(filteredString);
 }
 
 

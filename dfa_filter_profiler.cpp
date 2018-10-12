@@ -22,12 +22,12 @@ wstring randomString(int length) {
   return ss.str();
 }
 
-class AddTest : public TestWithParam<int> {
+class Profiler : public TestWithParam<int> {
 public:
 
 };
 
-INSTANTIATE_TEST_CASE_P(Profiler, AddTest,
+INSTANTIATE_TEST_CASE_P(Profiler, Profiler,
   ::testing::ValuesIn([]() -> vector<int> {
 
     int min = stoi(getenv("DATASIZE_MIN"));
@@ -45,7 +45,7 @@ INSTANTIATE_TEST_CASE_P(Profiler, AddTest,
   testing::PrintToStringParamName()
 );
 
-TEST_P(AddTest, add) {
+TEST_P(Profiler, test) {
   int dataSize = GetParam();
 
   DFAFilter filter;

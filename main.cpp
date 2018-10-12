@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
         ("data-size-min",   value<int>(&min)->default_value(10000),             "Min. number of dirty words used in the profiling")
         ("data-size-max",   value<int>(&max)->default_value(200000),            "Max. number of dirty words used in the profiling")
         ("data-size-step",  value<int>(&step)->default_value(10000),             "Number of dirty words added between each profiling")
-        ("sentence-length", value<int>(&len)->default_value(1000),             "Length of the sentence to be filtered in the profiling");
+        ("sentence-length", value<int>(&len)->default_value(1000),             "Length of the sentence to be filtered in the profiling")
         ("report-file",     value<string>(&report)->default_value("report.csv"),   "Length of the sentence to be filtered in the profiling");
 
     variables_map vm;
@@ -72,7 +72,8 @@ void profiling(int dataSizeMin, int dataSizeMax, int dataSizeStep, int sentenceL
 
     int size = dataSizeMin;
 
-    fstream fs(report);
+    ofstream fs;
+    fs.open(report);
     fs << "# dirty words, add() ms, filter() ms" << endl;
 
     while (size <= dataSizeMax) {
@@ -107,6 +108,7 @@ void profiling(int dataSizeMin, int dataSizeMax, int dataSizeStep, int sentenceL
         size += dataSizeStep;
     }
 
+    fs.close();
 }
 
 long long getCpuMs(){

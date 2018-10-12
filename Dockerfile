@@ -15,4 +15,5 @@ RUN ./unittest
 
 FROM ubuntu:18.04
 COPY --from=builder /src/build/filter /usr/bin/filter
+WORKDIR /workdir
 CMD [ "filter" ]

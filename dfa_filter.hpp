@@ -15,6 +15,8 @@ public:
 
     std::unordered_map<wchar_t, std::vector<std::wstring>> getDFATree();
 
+    std::wstring search(const std::wstring& in);
+
 private:
 
     std::unordered_map<wchar_t, std::vector<std::wstring>> _tree;

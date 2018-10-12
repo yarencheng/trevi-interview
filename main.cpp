@@ -138,7 +138,8 @@ void interactMode() {
         if (wline[0] == L'+') {
             filter.add({wline.substr(1)});
         } else if (wline[0] == L'?') {
-            cout << "search TODO" << endl;
+            wstring result = filter.search(wline.substr(1));
+            cout << "> " << converter.to_bytes(result) << endl;
         } else {
             wstring wfiltered = filter.filter(wline);
             string filtered = converter.to_bytes(wfiltered);

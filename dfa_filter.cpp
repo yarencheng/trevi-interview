@@ -1,5 +1,7 @@
 #include "dfa_filter.hpp"
 
+#include <locale>
+#include <codecvt>
 #include <algorithm>
 #include <set>
 #include <sstream>
@@ -68,4 +70,26 @@ wstring DFAFilter::filter(const wstring& in) {
 
 unordered_map<wchar_t, vector<wstring>> DFAFilter::getDFATree() {
     return _tree;
+}
+
+wstring DFAFilter::search(const wstring& in) {
+
+    wstringstream ws;
+
+    for (auto it=_dirtyWords.begin(); it!=_dirtyWords.end(); it++) {
+        auto& word = *it;
+
+        auto start = word.find(in);
+        if (it->find(in) == wstring::npos) {
+            continue;
+        }
+
+        if (it!=_dirtyWords.end()) {
+            ws << " ";
+        }
+
+        ws << word.substr(0, start) << "[" << in << "]" << word.substr(start+in.size());
+    }
+
+    return ws.str();
 }

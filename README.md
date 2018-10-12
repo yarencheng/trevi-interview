@@ -62,8 +62,9 @@ abc
 
 # Profiling mode
 
-Enable Profiling mode with additional parameter `--profiling`.
+Enable Profiling mode with additional parameter `filter --profiling`.
 A CSV file `report.csv` is generated inside `pwd` in the end.
+For more parameters, see `filter --help`.
 
 ```
 docker run -it --rm \
@@ -71,6 +72,8 @@ docker run -it --rm \
     trevi-interview \
     filter --profiling
 ```
+
+
 
 # TODO
 

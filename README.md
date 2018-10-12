@@ -32,7 +32,7 @@ abc
 > abc
 ```
 
-Add a dirty word by add a prefix `+` in front of the line.
+Words is mask by `*` if it contains dirty words.
 
 ```
 abc

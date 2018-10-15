@@ -72,6 +72,7 @@ Search dirty words by appending `?`
 
 # Profiling mode
 
+## How to run
 Enable Profiling mode with additional parameter `filter --profiling`.
 A CSV file `report.csv` is generated inside `pwd` in the end.
 For more parameters, see `filter --help`.
@@ -82,6 +83,10 @@ docker run -it --rm \
     trevi-interview \
     filter --profiling
 ```
+
+## How it works
+
+Use [getrusage](http://man7.org/linux/man-pages/man2/getrusage.2.html) to record CPU usage at each target functions like `add()` & `filter`
 
 * Column 1: Number of dirty words
 * Column 2: Time consumption(ms) during `add()`
@@ -113,7 +118,8 @@ docker run -it --rm \
 
 ```
 
+# Complexity
 
-# TODO
+## Time complexity
 
-- [ ] BUG: wrong time report by profiler
+### Add

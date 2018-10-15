@@ -97,26 +97,28 @@ Use [getrusage()](http://man7.org/linux/man-pages/man2/getrusage.2.html) to reco
 ```
 [report.csv]
 # dirty words, add() ms, filter() ms
-100000,185063,179961
-200000,372231,403642
-300000,606368,583005
-400000,780404,757843
-500000,1033700,974128
-600000,1250405,1159814
-700000,1446695,1414249
-800000,1608281,1684150
-900000,1814630,1839142
-1000000,2134483,2089447
-1100000,2496606,2174671
-1200000,2633108,2534972
-1300000,2818236,2745403
-1400000,3015094,2907420
-1500000,3172503,3204875
-1600000,3445925,3288202
-1700000,3563307,3611462
-1800000,3669621,3390016
-1900000,4321817,4251598
-2000000,4454588,4308447
+# dirty words, add() ms, filter() ms
+100000,208716,48446
+200000,424993,53898
+300000,673326,52605
+400000,862585,51553
+500000,1241880,52417
+600000,1370359,52642
+700000,1578414,57690
+800000,1799462,51109
+900000,2019286,52063
+1000000,2325842,51698
+1100000,2654198,52717
+1200000,2953958,58391
+1300000,2992349,53074
+1400000,3253307,54117
+1500000,3473581,55512
+1600000,3666539,52594
+1700000,3852485,47672
+1800000,4167544,55829
+1900000,4780916,51982
+2000000,5012406,49030
+
 
 ```
 
@@ -128,17 +130,19 @@ Use [getrusage()](http://man7.org/linux/man-pages/man2/getrusage.2.html) to reco
 
 * n: number of dirty words
 
-* Best case: O( n * log(n) )
-
-    * The first `for` loop costs `n`, if there is no collision on the `std::unordered_map`.
-    * The second `for` loop costs `n * log(n)`.
+* Best case
+    * `O(n)`: The first `for` loop
+        * `O(1)`: if there is no collision inside the `std::unordered_set`.
+        * `O(log(n))`: add a string into sorted `std::map`.
+    * Total: `O(n*log(n))`
 
 * Worst case: O( n^2 )
+    * `O(n)`: The first `for` loop
+        * `O(n)`: if there a collision inside the `std::unordered_map`.
+        * `O(log(n))`: add a string into sorted `std::map`.
+    * Total: `O(n*n)`
 
-    * The first `for` loop costs `n * n`, if there is collision on the `std::unordered_map`.
-    * The second `for` loop costs `n * log(n)`.
-
-> According to [cplusplus](http://www.cplusplus.com/reference/unordered_map/unordered_map/), the probability of collision approaching `1.0/std::numeric_limits<size_t>::max()` which is `18446744073709551615` and is fare more than `200000`. Therefore using `std::unsorted_map` is more reasonable than `std::map` here.
+> According to [cplusplus](http://www.cplusplus.com/reference/unordered_set/unordered_set/), the probability of collision approaching `1.0/std::numeric_limits<size_t>::max()` which is `18446744073709551615` and is more than `200000`. Therefore, using `std::unordered_set` is more reasonable than `std::set` here.
 
 ### `DFAFilter::filter()`
 
@@ -155,9 +159,11 @@ Use [getrusage()](http://man7.org/linux/man-pages/man2/getrusage.2.html) to reco
 
 ### `class DFAFilter`
 
-* O(n): `unordered_map _tree`
-* O(n): `unordered_set _dirtyWords`
-* Total O(n)
+* n: size of the vector `const vector<wstring>& dirtyWords`
+* m: length of a dirty word
+* O(n*m): `unordered_map _tree`
+* O(n*m): `unordered_set _dirtyWords`
+* Total O(n*m)
 
 ### `DFAFilter::add()`
 
@@ -169,5 +175,6 @@ Use [getrusage()](http://man7.org/linux/man-pages/man2/getrusage.2.html) to reco
 
 * O(n): input parameter `const wstring& in`
 * O(n): temporary buffer `wstringstream out;`
+* Total O(n)
 
 

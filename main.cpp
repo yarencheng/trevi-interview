@@ -26,13 +26,13 @@ int main(int argc, char** argv) {
 
     options_description options( "Filter Options");
     options.add_options()
-        ("help",                                                            "Show help message")
-        ("profiling",                                                       "Profile the time consumption of this filter")
+        ("help",                                                                 "Show help message")
+        ("profiling",                                                            "Profile the time consumption of this filter")
         ("data-size-min",   value<int>(&min)->default_value(100000),             "Min. number of dirty words used in the profiling")
         ("data-size-max",   value<int>(&max)->default_value(2000000),            "Max. number of dirty words used in the profiling")
-        ("data-size-step",  value<int>(&step)->default_value(100000),             "Number of dirty words added between each profiling")
-        ("sentence-length", value<int>(&len)->default_value(1000),             "Length of the sentence to be filtered in the profiling")
-        ("report-file",     value<string>(&report)->default_value("report.csv"),   "Length of the sentence to be filtered in the profiling");
+        ("data-size-step",  value<int>(&step)->default_value(100000),            "Number of dirty words added between each profiling")
+        ("sentence-length", value<int>(&len)->default_value(100000),             "Length of the sentence to be filtered in the profiling")
+        ("report-file",     value<string>(&report)->default_value("report.csv"), "Length of the sentence to be filtered in the profiling");
 
     variables_map vm;
     store(parse_command_line(argc, argv, options), vm);

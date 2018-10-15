@@ -136,7 +136,7 @@ Use [getrusage()](http://man7.org/linux/man-pages/man2/getrusage.2.html) to reco
         * `O(log(n))`: add a string into sorted `std::map`.
     * Total: `O(n*log(n))`
 
-* Worst case: O( n^2 )
+* Worst case:
     * `O(n)`: The first `for` loop
         * `O(n)`: if there a collision inside the `std::unordered_map`.
         * `O(log(n))`: add a string into sorted `std::map`.
@@ -150,10 +150,15 @@ Use [getrusage()](http://man7.org/linux/man-pages/man2/getrusage.2.html) to reco
 * b: length of string to be filtered
 * c: length of a dirty word
 
-* Best case: O( a * b * c )
-    * if `c << b`
-* Worst case: O( a * b^2 )
-    * If `c ~ b`
+* Best case: if `c << b`
+    * `O(b)`: the first `for` loop
+        * `O(1)`: get element from a `std::unordered_map`
+            * `O(a)`: the 2nd `for`
+                * `O(c)`: compare with a dirty word
+    * Total: `O( a * b * c )`
+* Worst case: If `c ~ b`
+    * (as above)
+    * Total: `O( a * b^2 )`
 
 ## Space complexity
 

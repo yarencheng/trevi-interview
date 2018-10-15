@@ -163,3 +163,17 @@ TEST(DFAFilter, filter_5) {
 
 }
 
+TEST(DFAFilter, filter_6) {
+
+  // arrange
+  DFAFilter filter;
+  filter.add({L"ab",});
+
+  // action
+  wstring actual = filter.filter(L"a");
+
+  // assert
+  EXPECT_EQ(actual, L"a");
+
+}
+

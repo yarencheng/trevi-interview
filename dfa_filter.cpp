@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <set>
 #include <sstream>
+#include <iostream>
 
 using namespace ::std;
 using namespace ::interview;
@@ -21,7 +22,6 @@ void DFAFilter::add(const vector<wstring>& dirtyWords) {
         if (!r.second) {
             continue;
         }
-
 
         wchar_t first = word[0];
 
@@ -42,20 +42,20 @@ wstring DFAFilter::filter(const wstring& in) {
         if (it != _tree.end()) {
             auto& v = it->second;
             int len = 0;
-            for (auto& p: v) {
-                wstring word = p.first;
+            for (auto it_ = v.begin(); it_ != v.end(); it_++) {
+                wstring word = it_->first;
                 int beginIndex = i+1;
                 int endIndex   = i+1+word.length();
                 if((endIndex <= in.length()) && in.substr(beginIndex, endIndex-beginIndex) == word){
-                    len = word.length();
+                    len = word.length() + 1;
                     break;
                 }
             }
-            if(len >= 0){
-                for(int t=0; t<len+1; t++){
+            if(len > 0){
+                for(int t=0; t<len; t++){
                     out << "*";
                 }
-                i += len;
+                i += len - 1;
                 continue;
             }
         }

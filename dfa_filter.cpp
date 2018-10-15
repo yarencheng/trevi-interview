@@ -9,6 +9,10 @@
 using namespace ::std;
 using namespace ::interview;
 
+bool compare(wstring s1, wstring s2) {
+    return s1.size() > s2.size();
+}
+
 void DFAFilter::add(const vector<wstring>& dirtyWords) {
 
     for (auto& word: dirtyWords) {
@@ -22,16 +26,9 @@ void DFAFilter::add(const vector<wstring>& dirtyWords) {
         wchar_t first = word[0];
 
         if (_tree.find(first) == _tree.end()) {
-            _tree[first] = vector<wstring>();
+            _tree[first] = map<wstring, int, function<bool(wstring, wstring)>>(compare);
         }
-        _tree.find(first)->second.push_back(word.substr(1, word.length()-1));
-    }
-
-    for (auto& e: _tree) {
-        auto& v = e.second;
-        sort (v.begin(), v.end(), [](const wstring& s1, const wstring& s2){
-            return s1.size() > s2.size();
-        });
+        _tree.find(first)->second[word.substr(1, word.length()-1)] = 1;
     }
 }
 
@@ -45,11 +42,12 @@ wstring DFAFilter::filter(const wstring& in) {
         if (it != _tree.end()) {
             auto& v = it->second;
             int len = 0;
-            for(int j=0; j<v.size(); j++){
+            for (auto& p: v) {
+                wstring word = p.first;
                 int beginIndex = i+1;
-                int endIndex   = i+1+v[j].length();
-                if((endIndex <= in.length()) && in.substr(beginIndex, endIndex-beginIndex) == v[j]){
-                    len = v[j].length();
+                int endIndex   = i+1+word.length();
+                if((endIndex <= in.length()) && in.substr(beginIndex, endIndex-beginIndex) == word){
+                    len = word.length();
                     break;
                 }
             }
@@ -65,11 +63,22 @@ wstring DFAFilter::filter(const wstring& in) {
         out << first;
     }
 
+
     return out.str();
 }
 
 unordered_map<wchar_t, vector<wstring>> DFAFilter::getDFATree() {
-    return _tree;
+    unordered_map<wchar_t, vector<wstring>> ans;
+
+    for (auto& p1: _tree) {
+        auto v = vector<wstring>();
+        for (auto& p2: p1.second) {
+            v.push_back(p2.first);
+        }
+        ans[p1.first] = v;
+    }
+
+    return ans;
 }
 
 wstring DFAFilter::search(const wstring& in) {

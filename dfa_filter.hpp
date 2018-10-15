@@ -1,8 +1,10 @@
 #pragma once
 
 #include <vector>
+#include <map>
 #include <unordered_map>
 #include <unordered_set>
+#include <functional>
 
 namespace interview {
 
@@ -19,7 +21,14 @@ public:
 
 private:
 
-    std::unordered_map<wchar_t, std::vector<std::wstring>> _tree;
+    std::unordered_map<
+        wchar_t,
+        std::map<
+            std::wstring,
+            int,
+            std::function<bool(std::wstring, std::wstring)>
+        >
+    > _tree;
 
     std::unordered_set<std::wstring> _dirtyWords;
 

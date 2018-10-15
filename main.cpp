@@ -119,7 +119,7 @@ long long getCpuMs(){
 
     long long ms = usage.ru_utime.tv_sec;
     ms *= 1000 * 1000;
-    ms += usage.ru_utime.tv_usec / 1000;
+    ms += usage.ru_utime.tv_usec;
 
     return ms;
 }

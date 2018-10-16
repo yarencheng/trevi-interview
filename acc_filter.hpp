@@ -12,7 +12,7 @@ class ACCNode {
 public:
 
 private:
-    std::unordered_map<wchar_t, std::shared_ptr<ACCNode>> _childs;
+    std::unordered_map<wchar_t, std::unique_ptr<ACCNode>> _childs;
 };
 
 class ACCFilter {
@@ -21,7 +21,7 @@ public:
     void add(const std::wstring& s);
 
 private:
-    std::shared_ptr<ACCNode> _root = std::make_shared<ACCNode>();
+    std::unique_ptr<ACCNode> _root = std::make_unique<ACCNode>();
 };
 
 }

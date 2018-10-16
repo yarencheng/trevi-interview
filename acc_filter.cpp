@@ -27,12 +27,6 @@ ACCNode::ACCNode(const std::unordered_map<wchar_t, std::shared_ptr<ACCNode>>& ch
 
 }
 
-ACCNode::ACCNode(const std::map<wchar_t, std::shared_ptr<ACCNode>>& childs)
-    : _childs(childs.begin(), childs.end())
-{
-
-}
-
 bool ACCNode::operator==(const ACCNode& n) const {
     if (_childs.size() != n._childs.size()) {
         return false;

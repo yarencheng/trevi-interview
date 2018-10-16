@@ -15,7 +15,6 @@ public:
 
     ACCNode();
     ACCNode(const std::unordered_map<wchar_t, std::shared_ptr<ACCNode>>& childs);
-    ACCNode(const std::map<wchar_t, std::shared_ptr<ACCNode>>& childs);
 
     bool operator==(const ACCNode& n) const;
     bool operator!=(const ACCNode& n) const;

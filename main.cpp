@@ -8,6 +8,7 @@
 #include <string>
 #include <boost/program_options.hpp>
 #include "dfa_filter.hpp"
+#include "acc_filter.hpp"
 
 using namespace ::std;
 using namespace ::boost::program_options;
@@ -126,7 +127,8 @@ long long getCpuMs(){
 
 void interactMode() {
 
-    DFAFilter filter;
+    ACCFilter filter;
+    filter.build();
     wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
 
     while (true) {
@@ -135,11 +137,16 @@ void interactMode() {
 
         wstring wline = converter.from_bytes(line);
 
-        if (wline[0] == L'+') {
-            filter.add({wline.substr(1)});
+        if (wline.length() == 0) {
+            cout << endl<< "EXIT" << endl << endl;
+            return;
+        } if (wline[0] == L'+') {
+            filter.add(wline.substr(1));
+            filter.build();
         } else if (wline[0] == L'?') {
-            wstring result = filter.search(wline.substr(1));
-            cout << "> " << converter.to_bytes(result) << endl;
+            // wstring result = filter.search(wline.substr(1));
+            // cout << "> " << converter.to_bytes(result) << endl;
+            cout << "TODO" << endl;
         } else {
             wstring wfiltered = filter.filter(wline);
             string filtered = converter.to_bytes(wfiltered);

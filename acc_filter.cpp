@@ -1,6 +1,7 @@
 #include "acc_filter.hpp"
 
 #include <queue>
+#include <sstream>
 
 using namespace ::std;
 using namespace ::interview;
@@ -10,6 +11,7 @@ void ACCFilter::add(const wstring& s) {
     for (wchar_t c: s) {
         if (cur->_childs.find(c) == cur->_childs.end()) {
             cur->_childs[c] = make_shared<ACCNode>();
+            cur->_childs[c]->_level = cur->_level + 1;
         }
         cur = cur->_childs[c];
     }
@@ -27,6 +29,7 @@ void ACCFilter::build() {
     queue<shared_ptr<ACCNode>> parents;
     parents.push(_root);
 
+    // walk from top to bottom
     while (!parents.empty()) {
         auto parent = parents.front();
         parents.pop();
@@ -51,7 +54,35 @@ void ACCFilter::build() {
 }
 
 wstring ACCFilter::filter(const wstring& s) const {
-    throw "TODO";
+
+    wstringstream os;
+
+    int index = 0;
+    auto cur = _root;
+
+    while (index <= s.length()) {
+
+        if (cur != _root && cur->_childs.empty()) {
+            index += cur->_level;
+            os << wstring(cur->_level, L'*');
+            cur = _root;
+            continue;
+        }
+
+        wchar_t c = s[index + cur->_level];
+
+        if (cur->_childs.find(c) == cur->_childs.end()) {
+            cur = _failNodes[cur->_failIndex];
+            int step = cur->_level - cur->_failIndex + 1;
+            os << s.substr(index, step);
+            index += step;
+            continue;
+        }
+
+        cur = cur->_childs[c];
+    }
+
+    return os.str();
 }
 
 std::shared_ptr<ACCNode> ACCFilter::getRoot() {

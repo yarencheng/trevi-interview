@@ -177,3 +177,91 @@ TEST(ACCFilter, build) {
   auto actual = filter.getRoot();
   EXPECT_EQ(*expected, *actual);
 }
+
+TEST(ACCFilter, filter_1) {
+
+  // arrange
+  ACCFilter filter;
+  filter.add(L"a");
+  filter.build();
+
+  // action
+  wstring actual = filter.filter(L"abbbabbba");
+
+  // assert
+  EXPECT_EQ(actual, L"*bbb*bbb*");
+}
+
+
+TEST(ACCFilter, filter_2) {
+
+  // arrange
+  ACCFilter filter;
+  filter.add(L"aa");
+  filter.build();
+
+  // action
+  wstring actual = filter.filter(L"aabbbaabbbaa");
+
+  // assert
+  EXPECT_EQ(actual, L"**bbb**bbb**");
+}
+
+TEST(ACCFilter, filter_3) {
+
+  // arrange
+  ACCFilter filter;
+  filter.add(L"aaa");
+  filter.build();
+
+  // action
+  wstring actual = filter.filter(L"aaabbbaaabbbaaa");
+
+  // assert
+  EXPECT_EQ(actual, L"***bbb***bbb***");
+}
+
+TEST(ACCFilter, filter_4) {
+
+  // arrange
+  ACCFilter filter;
+  filter.add(L"a");
+  filter.add(L"ab");
+  filter.add(L"abc");
+  filter.add(L"abcd");
+  filter.build();
+
+  // action
+  wstring actual = filter.filter(L"abcdefg");
+
+  // assert
+  EXPECT_EQ(actual, L"****efg");
+}
+
+TEST(ACCFilter, filter_5) {
+
+  // arrange
+  ACCFilter filter;
+  filter.add(L"二");
+  filter.build();
+
+  // action
+  wstring actual = filter.filter(L"一二三");
+
+  // assert
+  EXPECT_EQ(actual, L"一*三");
+}
+
+TEST(ACCFilter, filter_6) {
+
+  // arrange
+  ACCFilter filter;
+  filter.add(L"ab");
+  filter.build();
+
+  // action
+  wstring actual = filter.filter(L"a");
+
+  // assert
+  EXPECT_EQ(actual, L"a");
+}

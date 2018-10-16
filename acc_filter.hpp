@@ -39,6 +39,7 @@ private:
     std::unordered_map<wchar_t, std::shared_ptr<ACCNode>> _childs;
     int _index = -1;
     int _failIndex = -1;
+    int _level = 0;
 };
 
 class ACCFilter {

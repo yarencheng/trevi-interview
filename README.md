@@ -81,6 +81,32 @@ EXIT
 
 ```
 
+# Complexity
+
+* class `ACCFilter`
+
+
+* `ACCFilter::add(dirtyWord)`
+    * `n`: length of input `dirtyWord`
+    * time complexity: `O(n)`
+    * space complexity: `O(n)`
+
+* `ACCFilter::build()`
+    * `N`: total length of all dirty words
+    * time complexity: `O(N)`
+    * space complexity: `O(N)`
+
+* `ACCFilter::filter(sentence)`
+    * `m`: length of input `sentence`
+    * `l`: Total appearance of each dirty word
+    * time complexity: `O(m + l)`
+    * space complexity: `O(m + l)`
+
+* `ACCFilter::search(pattern)`
+    * `N`: total length of all dirty words
+    * `l`: total number of dirty words matched by `pattern`
+    * time complexity: `O(N + l)`
+    * space complexity: `O(l)`
 
 # Profiling mode
 
@@ -98,65 +124,37 @@ docker run -it --rm \
 
 ## How it works
 
-Use [getrusage()](http://man7.org/linux/man-pages/man2/getrusage.2.html) to record CPU time used by `add()` & `filter()`. To get the CPU time which is spent by `add()` & `filter()`, use [getrusage()](http://man7.org/linux/man-pages/man2/getrusage.2.html) to record current CPU time before and after the execution. It accurate to micro seconds.
+1. add one dirty word
+2. re-build ACC tree
+3. give a random pattern, and search all matched dirty words.
+    * repeat 5 times, and get average time consumption
+4. give a random sentence, and filter with all dirty words.
+    * repeat 5 times, and get average time consumption
+5. record each time consumption of step 1~4
+6. repeat step 1~5 until reach 200000 dirty words.
+
+> other cost, like generating random string, is ignored.
 
 ## Column in `report.csv`
 
-* Column 1: Number of dirty words
-* Column 2: Time consumption(ms) during `add()`
-* Column 3: Time consumption(ms) during `filter()`
+* Column 1: `# dirty words` Total number of dirty words in the filter
+* Column 2: `add() ms` Time consumption of `add()`
+* Column 3: `build() ms` Time consumption of `build()`
+* Column 4: `search() ms` Time consumption of `search()`
+* Column 5: `filter() ms` Time consumption of `filter()`
+* time unit: micro second
 
 ```
 [report.csv]
-# dirty words, add() ms, filter() ms
-# dirty words, add() ms, filter() ms
-100000,208716,48446
-200000,424993,53898
-300000,673326,52605
-400000,862585,51553
-500000,1241880,52417
-600000,1370359,52642
-700000,1578414,57690
-800000,1799462,51109
-900000,2019286,52063
-1000000,2325842,51698
-1100000,2654198,52717
-1200000,2953958,58391
-1300000,2992349,53074
-1400000,3253307,54117
-1500000,3473581,55512
-1600000,3666539,52594
-1700000,3852485,47672
-1800000,4167544,55829
-1900000,4780916,51982
-2000000,5012406,49030
-
+# dirty words, add() ms, build() ms, search() avg ms, filter() avg ms
+...
+29512,11,134143,30527.5,145
+29513,13,139004,29915,133
+29514,12,144974,29585,124
+29515,11,133373,29592,93.6
+29516,10,127857,31181.5,148.8
+29517,11,148383,31004.5,159
+29518,11,127867,29825.5,144
+...
 
 ```
-
-# Complexity
-
-* class `ACCFilter`
-
-
-* `ACCFilter::add(dirtyWord)`
-    * `n`: length of input `dirtyWord`
-    * time complexity: `O(n)`
-    * space complexity: `O(n)`
-
-* `ACCFilter::build()`
-    * `Dn`
-        * `D1`: the length of the 1st dirty word
-        * `D2`: the length of the 2nd dirty word
-        * ...
-        * `Dn`: the length of the nth dirty word
-    * time complexity: `O(D1 + D2 + ... + Dn) = O(D)`
-    * space complexity: `O((D1 + D2 + ... + Dn)*2) = O(D)`
-
-* `ACCFilter::filter(sentence)`
-    * `m`: length of input `sentence`
-    * `l`: Total appearance of each dirty word
-    * time complexity: `O(m + l)`
-    * space complexity: `O(m + m) = O(m)`
-
-

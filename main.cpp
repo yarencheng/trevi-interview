@@ -30,11 +30,11 @@ int main(int argc, char** argv) {
     options.add_options()
         ("help",                                                               "Show help message")
         ("profiling",                                                          "Profile the time consumption of this filter")
-        ("dirty-length",  value<int>(&dirtyLen)->default_value (          10), "Length of a dirty word in the profiling mode")
-        ("search-length", value<int>(&searchLen)->default_value(           5), "Length of the pattern string to search dirty words in the profiling mode")
-        ("filter-length", value<int>(&filterLen)->default_value(         500), "Length of the string to be filtered by dirty words in the profiling mode")
-        ("search-round",  value<int>(&searchRound)->default_value(        10), "Number of rounds to re-profile time consumption of searching after a dirty word is added in the profiling mode")
-        ("filter-round",  value<int>(&filterRound)->default_value(        10), "Number of rounds to re-profile time consumption of filtering after a dirty word is added in the profiling mode")
+        ("dirty-length",  value<int>(&dirtyLen)->default_value (           5), "Length of a dirty word in the profiling mode")
+        ("search-length", value<int>(&searchLen)->default_value(           2), "Length of the pattern string to search dirty words in the profiling mode")
+        ("filter-length", value<int>(&filterLen)->default_value(         100), "Length of the string to be filtered by dirty words in the profiling mode")
+        ("search-round",  value<int>(&searchRound)->default_value(         5), "Number of rounds to re-profile time consumption of searching after a dirty word is added in the profiling mode")
+        ("filter-round",  value<int>(&filterRound)->default_value(         5), "Number of rounds to re-profile time consumption of filtering after a dirty word is added in the profiling mode")
         ("dirty-max",     value<int>(&dirtyMax)->default_value(       200000), "Max. number of dirty words used in the profiling mode")
         ("report-file",   value<string>(&report)->default_value("report.csv"), "Length of the sentence to be filtered in the profiling");
 

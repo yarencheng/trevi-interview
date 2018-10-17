@@ -8,12 +8,18 @@ using namespace ::interview;
 
 void ACCFilter::add(const wstring& s) {
     auto cur = _root;
-    for (wchar_t c: s) {
+    for (auto it=s.begin(); it!=s.end(); it++) {
+        wchar_t c = *it;
+
         if (cur->_childs.find(c) == cur->_childs.end()) {
             cur->_childs[c] = make_shared<ACCNode>();
             cur->_childs[c]->_level = cur->_level + 1;
         }
+
         cur = cur->_childs[c];
+        if (it+1 == s.end()) {
+            cur->_isLast = true;
+        }
     }
 }
 
@@ -72,6 +78,14 @@ wstring ACCFilter::filter(const wstring& s) const {
         wchar_t c = s[index + cur->_level];
 
         if (cur->_childs.find(c) == cur->_childs.end()) {
+
+            if (cur->_isLast) {
+                index += cur->_level;
+                os << wstring(cur->_level, L'*');
+                cur = _root;
+                continue;
+            }
+
             cur = _failNodes[cur->_failIndex];
             int step = cur->_level - cur->_failIndex + 1;
             os << s.substr(index, step);
@@ -83,6 +97,77 @@ wstring ACCFilter::filter(const wstring& s) const {
     }
 
     return os.str();
+}
+
+vector<wstring> ACCFilter::search(const wstring& s) const {
+
+    vector<wstring> result;
+    vector<wchar_t> prefix;
+
+    searchRecursive(_root, prefix, result, s, 0);
+
+    return result;
+}
+
+void ACCFilter::searchRecursive(
+    shared_ptr<ACCNode> node,
+    vector<wchar_t>& prefix,
+    vector<wstring>& result,
+    const std::wstring& target,
+    int targetIndex
+) const {
+
+    wchar_t targetC = target[targetIndex];
+
+    for (const auto& p: node->_childs) {
+        wchar_t c = p.first;
+        const auto& child = p.second;
+
+        prefix.push_back(c);
+
+        if (c != targetC) {
+            // not match
+            searchRecursive(child, prefix, result, target, 0);
+        } else {
+            // match prefix
+            if (targetIndex+1==target.size()) {
+                // match all
+                // fill all words into result
+                searchRecursive(child, prefix, result);
+            } else {
+                searchRecursive(child, prefix, result, target, targetIndex + 1);
+            }
+        }
+
+        prefix.pop_back();
+    }
+}
+
+void ACCFilter::searchRecursive(
+    shared_ptr<ACCNode> node,
+    vector<wchar_t>& prefix,
+    vector<wstring>& result
+) const {
+
+    if (node->_childs.empty()) {
+        wstring s(prefix.begin(), prefix.end());
+        result.push_back(s);
+        return;
+    }
+
+    if (node->_isLast) {
+        wstring s(prefix.begin(), prefix.end());
+        result.push_back(s);
+    }
+
+    for (auto p: node->_childs) {
+        wchar_t c = p.first;
+        auto child = p.second;
+
+        prefix.push_back(c);
+        searchRecursive(child, prefix, result);
+        prefix.pop_back();
+    }
 }
 
 std::shared_ptr<ACCNode> ACCFilter::getRoot() {

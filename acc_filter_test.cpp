@@ -1,6 +1,7 @@
 #include "acc_filter.hpp"
 
 #include "gtest/gtest.h"
+#include "gmock/gmock.h"
 
 using namespace ::std;
 using namespace ::testing;
@@ -265,3 +266,122 @@ TEST(ACCFilter, filter_6) {
   // assert
   EXPECT_EQ(actual, L"a");
 }
+
+TEST(ACCFilter, filter_7) {
+
+  // arrange
+  ACCFilter filter;
+  filter.add(L"a");
+  filter.add(L"ab");
+  filter.build();
+
+  // action
+  wstring actual = filter.filter(L"a");
+
+  // assert
+  EXPECT_EQ(actual, L"*");
+}
+
+TEST(ACCFilter, search_1) {
+
+  // arrange
+  ACCFilter filter;
+  filter.build();
+
+  // action
+  auto actual = filter.search(L"a");
+
+  // assert
+  EXPECT_THAT(actual, IsEmpty());
+}
+
+TEST(ACCFilter, search_2) {
+
+  // arrange
+  ACCFilter filter;
+  filter.add(L"a");
+  filter.build();
+  vector<wstring> expected = {
+      L"a"
+  };
+
+  // action
+  auto actual = filter.search(L"a");
+
+  // assert
+  EXPECT_THAT(actual, ContainerEq(expected));
+}
+
+TEST(ACCFilter, search_3) {
+
+  // arrange
+  ACCFilter filter;
+  filter.add(L"ab");
+  filter.build();
+  vector<wstring> expected = {
+      L"ab"
+  };
+
+  // action
+  auto actual = filter.search(L"a");
+
+  // assert
+  EXPECT_THAT(actual, ContainerEq(expected));
+}
+
+TEST(ACCFilter, search_4) {
+
+  // arrange
+  ACCFilter filter;
+  filter.add(L"ba");
+  filter.build();
+  vector<wstring> expected = {
+      L"ba"
+  };
+
+  // action
+  auto actual = filter.search(L"a");
+
+  // assert
+  EXPECT_THAT(actual, ContainerEq(expected));
+}
+
+TEST(ACCFilter, search_5) {
+
+  // arrange
+  ACCFilter filter;
+  filter.add(L"bac");
+  filter.build();
+  vector<wstring> expected = {
+      L"bac"
+  };
+
+  // action
+  auto actual = filter.search(L"a");
+
+  // assert
+  EXPECT_THAT(actual, ContainerEq(expected));
+}
+
+TEST(ACCFilter, search_6) {
+
+  // arrange
+  ACCFilter filter;
+  filter.add(L"a");
+  filter.add(L"ab");
+  filter.add(L"ba");
+  filter.add(L"abc");
+  filter.build();
+
+  // action
+  auto actual = filter.search(L"a");
+
+  // assert
+  EXPECT_THAT(actual, UnorderedElementsAre(
+      L"a",
+      L"ab",
+      L"ba",
+      L"abc"
+    ));
+}
+

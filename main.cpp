@@ -144,9 +144,22 @@ void interactMode() {
             filter.add(wline.substr(1));
             filter.build();
         } else if (wline[0] == L'?') {
-            // wstring result = filter.search(wline.substr(1));
-            // cout << "> " << converter.to_bytes(result) << endl;
-            cout << "TODO" << endl;
+            auto words = filter.search(wline.substr(1));
+
+            cout << "[";
+
+            if (words.empty()) {
+                cout << " NOT FOUND ";
+            }
+
+            for (auto it=words.begin(); it!=words.end(); it++) {
+                if (it != words.begin()) {
+                    cout << ", ";
+                }
+                cout << converter.to_bytes(*it);
+            }
+
+            cout << "]" << endl;
         } else {
             wstring wfiltered = filter.filter(wline);
             string filtered = converter.to_bytes(wfiltered);

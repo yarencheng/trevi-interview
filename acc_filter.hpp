@@ -40,6 +40,7 @@ private:
     int _index = -1;
     int _failIndex = -1;
     int _level = 0;
+    bool _isLast = false;
 };
 
 class ACCFilter {
@@ -50,11 +51,28 @@ public:
 
     void build();
 
-    std::wstring filter(const std::wstring& s) const ;
+    std::wstring filter(const std::wstring& s) const;
+
+    std::vector<std::wstring> search(const std::wstring& s) const;
 
     std::shared_ptr<ACCNode> getRoot();
 
 private:
+
+    void searchRecursive(
+        std::shared_ptr<ACCNode> node,
+        std::vector<wchar_t>& prefix,
+        std::vector<std::wstring>& result,
+        const std::wstring& target,
+        int targetIndex
+    ) const;
+
+    void searchRecursive(
+        std::shared_ptr<ACCNode> node,
+        std::vector<wchar_t>& prefix,
+        std::vector<std::wstring>& result
+    ) const;
+
     std::shared_ptr<ACCNode> _root = std::make_shared<ACCNode>();
     std::vector<std::shared_ptr<ACCNode>> _failNodes;
 };

@@ -1,6 +1,6 @@
 # trevi-interview
 
-A string filter implement by DFA.
+A multi-pattern string filter implement by [Aho–Corasick algorithm](https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm).
 
 # Build
 
@@ -67,8 +67,20 @@ Search dirty words by appending `?`
 +bc
 +bcd
 ?b
->  [b]cd [b] [b]c
+>  [bcd, b, bc]
 ```
+
+Enter a empty string to exit
+
+```
+aaa
+> aaa
+
+
+EXIT
+
+```
+
 
 # Profiling mode
 
@@ -124,62 +136,27 @@ Use [getrusage()](http://man7.org/linux/man-pages/man2/getrusage.2.html) to reco
 
 # Complexity
 
-## Time complexity
+* class `ACCFilter`
 
-### `DFAFilter::add()`
 
-* n: number of dirty words
+* `ACCFilter::add(dirtyWord)`
+    * `n`: length of input `dirtyWord`
+    * time complexity: `O(n)`
+    * space complexity: `O(n)`
 
-* Best case
-    * `O(n)`: The first `for` loop
-        * `O(1)`: if there is no collision inside the `std::unordered_set`.
-        * `O(log(n))`: add a string into sorted `std::map`.
-    * Total: `O(n*log(n))`
+* `ACCFilter::build()`
+    * `Dn`
+        * `D1`: the length of the 1st dirty word
+        * `D2`: the length of the 2nd dirty word
+        * ...
+        * `Dn`: the length of the nth dirty word
+    * time complexity: `O(D1 + D2 + ... + Dn) = O(D)`
+    * space complexity: `O((D1 + D2 + ... + Dn)*2) = O(D)`
 
-* Worst case:
-    * `O(n)`: The first `for` loop
-        * `O(n)`: if there a collision inside the `std::unordered_map`.
-        * `O(log(n))`: add a string into sorted `std::map`.
-    * Total: `O(n*n)`
-
-> According to [cplusplus](http://www.cplusplus.com/reference/unordered_set/unordered_set/), the probability of collision approaching `1.0/std::numeric_limits<size_t>::max()` which is `18446744073709551615` and is more than `200000`. Therefore, using `std::unordered_set` is more reasonable than `std::set` here.
-
-### `DFAFilter::filter()`
-
-* a: number of dirty words
-* b: length of string to be filtered
-* c: length of a dirty word
-
-* Best case: if `c << b`
-    * `O(b)`: the first `for` loop
-        * `O(1)`: get element from a `std::unordered_map`
-            * `O(a)`: the 2nd `for`
-                * `O(c)`: compare with a dirty word
-    * Total: `O( a * b * c )`
-* Worst case: If `c ~ b`
-    * (as above)
-    * Total: `O( a * b^2 )`
-
-## Space complexity
-
-### `class DFAFilter`
-
-* n: size of the vector `const vector<wstring>& dirtyWords`
-* m: length of a dirty word
-* O(n*m): `unordered_map _tree`
-* O(n*m): `unordered_set _dirtyWords`
-* Total O(n*m)
-
-### `DFAFilter::add()`
-
-* n: size of the vector `const vector<wstring>& dirtyWords`
-* m: length of a dirty word
-* O(n*m)
-
-### `DFAFilter::filter()`
-
-* O(n): input parameter `const wstring& in`
-* O(n): temporary buffer `wstringstream out;`
-* Total O(n)
+* `ACCFilter::filter(sentence)`
+    * `m`: length of input `sentence`
+    * `l`: Total appearance of each dirty word
+    * time complexity: `O(m + l)`
+    * space complexity: `O(m + m) = O(m)`
 
 

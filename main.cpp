@@ -6,6 +6,7 @@
 #include <locale>
 #include <codecvt>
 #include <string>
+#include <numeric>
 #include <boost/program_options.hpp>
 #include "dfa_filter.hpp"
 #include "acc_filter.hpp"
@@ -16,24 +17,26 @@ using namespace ::interview;
 
 int main(int argc, char** argv);
 wstring randomString(int length);
-void profiling(int dataSizeMin, int dataSizeMax, int dataSizeStep, int sentenceLength, string report);
+void profiling(int dirtyLen, int searchLen, int filterLen, int searchRound, int filterRound, int dirtyMax, string report);
 long long getCpuMs();
 void interactMode();
 
 int main(int argc, char** argv) {
 
-    int min, max, step, len;
+    int dirtyLen, searchLen, filterLen, searchRound, filterRound, dirtyMax;
     string report;
 
     options_description options( "Filter Options");
     options.add_options()
-        ("help",                                                                 "Show help message")
-        ("profiling",                                                            "Profile the time consumption of this filter")
-        ("data-size-min",   value<int>(&min)->default_value(100000),             "Min. number of dirty words used in the profiling")
-        ("data-size-max",   value<int>(&max)->default_value(2000000),            "Max. number of dirty words used in the profiling")
-        ("data-size-step",  value<int>(&step)->default_value(100000),            "Number of dirty words added between each profiling")
-        ("sentence-length", value<int>(&len)->default_value(100000),             "Length of the sentence to be filtered in the profiling")
-        ("report-file",     value<string>(&report)->default_value("report.csv"), "Length of the sentence to be filtered in the profiling");
+        ("help",                                                               "Show help message")
+        ("profiling",                                                          "Profile the time consumption of this filter")
+        ("dirty-length",  value<int>(&dirtyLen)->default_value (       100),   "Length of a dirty word in the profiling mode")
+        ("search-length", value<int>(&searchLen)->default_value(        50),   "Length of the pattern string to search dirty words in the profiling mode")
+        ("filter-length", value<int>(&filterLen)->default_value(     10000),   "Length of the string to be filtered by dirty words in the profiling mode")
+        ("search-round",  value<int>(&searchRound)->default_value(      10),   "Number of rounds to re-profile time consumption of searching after a dirty word is added in the profiling mode")
+        ("filter-round",  value<int>(&filterRound)->default_value(      10),   "Number of rounds to re-profile time consumption of filtering after a dirty word is added in the profiling mode")
+        ("dirty-max",     value<int>(&dirtyMax)->default_value(     200000),   "Max. number of dirty words used in the profiling mode")
+        ("report-file",   value<string>(&report)->default_value("report.csv"), "Length of the sentence to be filtered in the profiling");
 
     variables_map vm;
     store(parse_command_line(argc, argv, options), vm);
@@ -45,7 +48,7 @@ int main(int argc, char** argv) {
     }
 
     if (vm.count("profiling")) {
-        profiling(min, max, step, len, report);
+        profiling(dirtyLen, searchLen, filterLen, searchRound, filterRound, dirtyMax, report);
         return 0;
     }
 
@@ -69,44 +72,58 @@ wstring randomString(int length) {
   return ss.str();
 }
 
-void profiling(int dataSizeMin, int dataSizeMax, int dataSizeStep, int sentenceLength, string report) {
-
-    int size = dataSizeMin;
+void profiling(int dirtyLen, int searchLen, int filterLen, int searchRound, int filterRound, int dirtyMax, string report) {
 
     ofstream fs;
     fs.open(report);
-    fs << "# dirty words, add() ms, filter() ms" << endl;
+    fs << "# dirty words, add() ms, build() ms, search() avg ms, filter() avg ms" << endl;
 
-    while (size <= dataSizeMax) {
+    ACCFilter filter;
+    filter.build();
 
-        cout << "Generate [" << size << "] dirty words" << endl;
+    for (int dirtyCount=1; dirtyCount<=dirtyMax; dirtyCount++) {
+        cout << "dirtyCount=" << dirtyCount << "/" << dirtyMax << endl; // TODO: refactor message
 
-        vector<wstring> dirtyWords;
-        for (int i=0; i<size; i++) {
-            dirtyWords.push_back(randomString(10));
+        wstring dirtyWord = randomString(dirtyLen);
+
+        auto t0 = getCpuMs();
+        filter.add(dirtyWord);
+        auto addMs = getCpuMs() - t0;
+
+        t0 = getCpuMs();
+        filter.build();
+        auto buildMs = getCpuMs() - t0;
+
+        vector<long long> searchMss;
+        for (int i=0; i<searchLen; i++) {
+            wstring searchPattern = randomString(searchLen);
+
+            t0 = getCpuMs();
+            filter.search(searchPattern);
+            auto searchMs = getCpuMs() - t0;
+
+            searchMss.push_back(searchMs);
         }
-        wstring sentence = randomString(sentenceLength);
+        auto searchMsAvg = accumulate(searchMss.begin(), searchMss.end(), 0.0)/searchMss.size();
 
-        DFAFilter filter;
+        vector<long long> filterMss;
+        for (int i=0; i<filterRound; i++) {
+            wstring filterSentence = randomString(filterLen);
 
-        cout << "Add [" << setw(10) << size << "] dirty words into filter" << endl;
+            t0 = getCpuMs();
+            filter.filter(filterSentence);
+            auto filterMs = getCpuMs() - t0;
 
-        long long ms1 = getCpuMs();
-        filter.add(dirtyWords);
-        long long ms2 = getCpuMs();
+            filterMss.push_back(filterMs);
+        }
+        auto filterMsAvg = accumulate(filterMss.begin(), filterMss.end(), 0.0)/filterMss.size();
 
-        cout << "Add [" << setw(10) << size << "] dirty words into filter ... [" << (ms2-ms1) << "] ms" << endl;
-        cout << "Filter with [" << setw(10) << size << "] dirty words" << endl;
-
-        long long ms3 = getCpuMs();
-        filter.filter(sentence);
-        long long ms4 = getCpuMs();
-
-        cout << "Filter with [" << setw(10) << size << "] dirty words     ... [" << (ms4-ms3) << "] ms" << endl;
-
-        fs << size << "," << (ms2-ms1) << "," << (ms4-ms3) << endl;
-
-        size += dataSizeStep;
+        fs  << dirtyCount << ","
+            << addMs << ","
+            << buildMs << ","
+            << searchMsAvg << ","
+            << filterMsAvg
+            << endl;
     }
 
     fs.close();

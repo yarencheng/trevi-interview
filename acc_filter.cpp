@@ -86,10 +86,16 @@ wstring ACCFilter::filter(const wstring& s) const {
                 continue;
             }
 
-            cur = _failNodes[cur->_failIndex];
-            int step = cur->_level - cur->_failIndex + 1;
+
+            int step = cur->_level - _failNodes[cur->_failIndex]->_level;
+            if (step == 0) {
+                step = 1;
+            }
             os << s.substr(index, step);
             index += step;
+
+            cur = _failNodes[cur->_failIndex];
+
             continue;
         }
 

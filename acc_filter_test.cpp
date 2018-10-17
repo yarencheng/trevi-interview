@@ -282,6 +282,21 @@ TEST(ACCFilter, filter_7) {
   EXPECT_EQ(actual, L"*");
 }
 
+TEST(ACCFilter, filter_8) {
+
+  // arrange
+  ACCFilter filter;
+  filter.add(L"ac");
+  filter.add(L"aaaaac");
+  filter.build();
+
+  // action
+  wstring actual = filter.filter(L"aaaac");
+
+  // assert
+  EXPECT_EQ(actual, L"aaa**");
+}
+
 TEST(ACCFilter, search_1) {
 
   // arrange

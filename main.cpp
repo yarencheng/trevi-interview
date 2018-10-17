@@ -81,8 +81,13 @@ void profiling(int dirtyLen, int searchLen, int filterLen, int searchRound, int 
     ACCFilter filter;
     filter.build();
 
+    int lastPercent = -1;
+
     for (int dirtyCount=1; dirtyCount<=dirtyMax; dirtyCount++) {
-        cout << "dirtyCount=" << dirtyCount << "/" << dirtyMax << endl; // TODO: refactor message
+        if (dirtyCount*100/dirtyMax > lastPercent) {
+            lastPercent = dirtyCount*100/dirtyMax;
+            cout << "dirtyCount = " << dirtyCount << "/" << dirtyMax << " (" << lastPercent << "%)" << endl;
+        }
 
         wstring dirtyWord = randomString(dirtyLen);
 

@@ -137,11 +137,11 @@ docker run -it --rm \
 
 ## Column in `report.csv`
 
-* Column 1: `# dirty words` Total number of dirty words in the filter
-* Column 2: `add() ms` Time consumption of `add()`
-* Column 3: `build() ms` Time consumption of `build()`
-* Column 4: `search() ms` Time consumption of `search()`
-* Column 5: `filter() ms` Time consumption of `filter()`
+* Column `# dirty words`: Total number of dirty words in the filter
+* Column `add() ms`: Time consumption of `add()`
+* Column `build() ms`: Time consumption of `build()`
+* Column `search() ms`: Time consumption of `search()`
+* Column `filter() ms`: Time consumption of `filter()`
 * time unit: micro second
 
 ```

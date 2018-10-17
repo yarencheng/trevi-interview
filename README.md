@@ -134,6 +134,7 @@ docker run -it --rm \
 6. repeat step 1~5 until reach 200000 dirty words.
 
 > other cost, like generating random string, is ignored.
+> each character in a random string is `[0-9a-zA-Z]`
 
 ## Column in `report.csv`
 

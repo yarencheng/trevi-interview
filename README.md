@@ -83,9 +83,6 @@ EXIT
 
 # Complexity
 
-* class `ACCFilter`
-
-
 * `ACCFilter::add(dirtyWord)`
     * `n`: length of input `dirtyWord`
     * time complexity: `O(n)`

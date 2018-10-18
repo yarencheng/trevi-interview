@@ -58,18 +58,19 @@ int main(int argc, char** argv) {
 }
 
 wstring randomString(int length) {
-  static const wchar_t alphanum[] =
-    L"0123456789"
-    L"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    L"abcdefghijklmnopqrstuvwxyz";
+    static const wchar_t alphanum[] =
+        L"0123456789"
+        L"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        L"abcdefghijklmnopqrstuvwxyz";
+    static int size = sizeof(alphanum)/sizeof(alphanum[0]);
 
-  wstringstream ss;
+    wstringstream ss;
 
-  for (int i = 0; i < length; ++i) {
-    ss << alphanum[rand() % (sizeof(alphanum) - 1)];
-  }
+    for (int i = 0; i < length; ++i) {
+        ss << alphanum[rand() % (size - 1)];
+    }
 
-  return ss.str();
+    return ss.str();
 }
 
 void profiling(int dirtyLen, int searchLen, int filterLen, int searchRound, int filterRound, int dirtyMax, string report) {

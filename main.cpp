@@ -100,6 +100,10 @@ void profiling(int dirtyLen, int searchLen, int filterLen, int searchRound, int 
         filter.add(dirtyWord);
         auto addMs = getCpuMs() - t0;
 
+        if (dirtyCount % (dirtyMax/1000) != 0) {
+            continue;
+        }
+
         t0 = getCpuMs();
         filter.build();
         auto buildMs = getCpuMs() - t0;

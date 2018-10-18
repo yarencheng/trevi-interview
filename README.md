@@ -124,17 +124,20 @@ docker run -it --rm \
 
 ## How it works
 
-1. add one dirty word
-2. re-build ACC tree
-3. give a random pattern, and search all matched dirty words.
+1. add 199 dirty words
+2. add one dirty word
+3. re-build ACC tree
+4. give a pattern, and search all matched dirty words.
     * repeat 5 times, and get average time consumption
-4. give a random sentence, and filter with all dirty words.
+5. give a sentence, and filter with all dirty words.
     * repeat 5 times, and get average time consumption
-5. record each time consumption of step 1~4
-6. repeat step 1~5 until reach 200000 dirty words.
-
-> other cost, like generating random string, is ignored.
-> each character in a random string is `[0-9a-zA-Z]`
+6. record each time consumption of step 2~5
+7. repeat step 1~6 until reach 200000 dirty words.
+8. Note:
+    * length of a dirty word is 5
+    * length of a pattern is 2
+    * length of a sentence is 100
+    * each character in a random string is `[0-9a-zA-Z]`
 
 ## Column in `report.csv`
 
@@ -159,3 +162,9 @@ docker run -it --rm \
 ...
 
 ```
+## Sample
+
+![](example/add.png)
+![](example/build.png)
+![](example/search.png)
+![](example/filter.png)

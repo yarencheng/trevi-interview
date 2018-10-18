@@ -7,11 +7,13 @@
 #include <codecvt>
 #include <string>
 #include <numeric>
+#include <chrono>
 #include <boost/program_options.hpp>
 #include "dfa_filter.hpp"
 #include "acc_filter.hpp"
 
 using namespace ::std;
+using namespace ::std::chrono;
 using namespace ::boost::program_options;
 using namespace ::interview;
 
@@ -83,11 +85,13 @@ void profiling(int dirtyLen, int searchLen, int filterLen, int searchRound, int 
     filter.build();
 
     int lastPercent = -1;
+    auto c0 = high_resolution_clock::now();
 
     for (int dirtyCount=1; dirtyCount<=dirtyMax; dirtyCount++) {
         if (dirtyCount*100/dirtyMax > lastPercent) {
             lastPercent = dirtyCount*100/dirtyMax;
-            cout << "dirtyCount = " << dirtyCount << "/" << dirtyMax << " (" << lastPercent << "%)" << endl;
+            auto cdiff = high_resolution_clock::now() - c0;
+            cout << "[" << setw(5) << duration_cast<seconds>(cdiff).count() << "] dirtyCount = " << dirtyCount << "/" << dirtyMax << " (" << lastPercent << "%)" << endl;
         }
 
         wstring dirtyWord = randomString(dirtyLen);
